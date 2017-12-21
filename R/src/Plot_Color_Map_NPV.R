@@ -50,7 +50,7 @@ plotfilename <- "ALL.NPZ.Plots.pdf"
 min.NPV <- -15
 max.NPV <- 0
 txt.mult = 2
-setwd(paste(getwd(),"/",datadir, sep = ""))
+setwd("./",datadir, sep = "")
 highhigh <- read.csv(file =  'NPV_output_Case1.csv', header = F)
 highlow <- read.csv(file = 'NPV_output_Case2.csv', header = F)
 lowhigh <- read.csv(file = 'NPV_output_Case3.csv', header = F)

@@ -9,25 +9,18 @@ setwd(wd)
 
 require(RColorBrewer)
 #setwd("/Users/essing/Dropbox/Desktop/Rcode/timtools/R")
-add.alpha <- function(col, alpha=1){
-  if(missing(col))
-    stop("Please provide a vector of colours.")
-  apply(sapply(col, col2rgb)/255, 2, 
-        function(x) 
-          rgb(x[1], x[2], x[3], alpha=alpha))  
+addalpha <- function(colors, alpha=1.0) {
+  r <- col2rgb(colors, alpha=T)
+  # Apply alpha
+  r[4,] <- alpha*255
+  r <- r/255.0
+  return(rgb(r[1,], r[2,], r[3,], r[4,]))
 }
-
 
 # colorRampPaletteAlpha()
 colorRampPaletteAlpha <- function(colors, n=32, interpolate='linear') {
   # addalpha()
-  addalpha <- function(colors, alpha=1.0) {
-    r <- col2rgb(colors, alpha=T)
-    # Apply alpha
-    r[4,] <- alpha*255
-    r <- r/255.0
-    return(rgb(r[1,], r[2,], r[3,], r[4,]))
-  }
+ 
    # Create the color ramp normally
   cr <- colorRampPalette(colors, interpolate=interpolate)(n)
   # Find the alpha channel
@@ -49,19 +42,14 @@ setwd("..")
 
 
 datadir <- 'data/optimization_output_summer_2016'
-#datadir <- 'data/Sensitivity_Diets'
-#datadir <- 'data/Sensitivity_Discount'
-#datadir <- 'data/Sensitivity_Prices'
+
 
 plotfilename <- "ALL.hNPZ.Plots.pdf"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Diets"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Discount"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Prices"
 
 min.NPV <- -40
 max.NPV <- 40
 txt.mult = 2
-setwd("./data/optimization_output_summer_2016")
+setwd(paste("./",datadir, sep = ""))
 highhigh <- read.csv(file =  'hNPV_output_Case1.csv', header = F)
 highlow <- read.csv(file = 'hNPV_output_Case2.csv', header = F)
 lowhigh <- read.csv(file = 'hNPV_output_Case3.csv', header = F)
@@ -80,14 +68,14 @@ Iflip[1, 4] = 1
 color.list.neg <- rep(brewer.pal(10,"RdYlBu")[1],11)
 alpha.list <- c(exp(-seq(0,2,length.out = 10)),0)
 color.alpha.neg<-rep(NA,11)
-for (k in 1:11) color.alpha.neg[k] <- add.alpha(color.list.neg[k],alpha.list[k])
+for (k in 1:11) color.alpha.neg[k] <- addalpha(color.list.neg[k],alpha.list[k])
 col.palette.neg <-
   colorRampPaletteAlpha(color.alpha.neg, n=33, interpolate = "linear")
 
 color.list.pos <- rep(brewer.pal(10,"RdYlBu")[10],11)
 alpha.list <- rev(alpha.list)
 color.alpha.pos<-rep(NA,11)
-for (k in 1:11) color.alpha.pos[k] <- add.alpha(color.list.pos[k],alpha.list[k])
+for (k in 1:11) color.alpha.pos[k] <- addalpha(color.list.pos[k],alpha.list[k])
 col.palette.pos <-
   colorRampPaletteAlpha(color.alpha.pos, n=20, interpolate = "linear")
 

@@ -9,24 +9,18 @@ setwd(wd)
 
 require(RColorBrewer)
 #setwd("/Users/essing/Dropbox/Desktop/Rcode/timtools/R")
-add.alpha <- function(col, alpha=1){
-  if(missing(col))
-    stop("Please provide a vector of colours.")
-  apply(sapply(col, col2rgb)/255, 2, 
-        function(x) 
-          rgb(x[1], x[2], x[3], alpha=alpha))  
+
+addalpha <- function(colors, alpha=1.0) {
+  r <- col2rgb(colors, alpha=T)
+  # Apply alpha
+  r[4,] <- alpha*255
+  r <- r/255.0
+  return(rgb(r[1,], r[2,], r[3,], r[4,]))
 }
 
 # colorRampPaletteAlpha()
 colorRampPaletteAlpha <- function(colors, n=32, interpolate='linear') {
   # addalpha()
-  addalpha <- function(colors, alpha=1.0) {
-    r <- col2rgb(colors, alpha=T)
-    # Apply alpha
-    r[4,] <- alpha*255
-    r <- r/255.0
-    return(rgb(r[1,], r[2,], r[3,], r[4,]))
-  }
   
   # Create the color ramp normally
   cr <- colorRampPalette(colors, interpolate=interpolate)(n)
@@ -49,19 +43,13 @@ setwd("..")
 
 
 datadir <- 'data/optimization_output_summer_2016'
-#datadir <- 'data/Sensitivity_Diets'
-#datadir <- 'data/Sensitivity_Discount'
-#datadir <- 'data/Sensitivity_Prices'
-
 plotfilename <- "ALL.cNPZ.Plots.pdf"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Diets"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Discount"
-#plotfilename <- "ALL.NPV.Plots.Sensitivity.Prices"
 
 min.NPV <- -40
 max.NPV <- 40
 txt.mult = 2
-setwd("./data/optimization_output_summer_2016")
+setwd(paste("./",datadir, sep = ""))
+
 highhigh <- read.csv(file =  'cNPV_output_Case1.csv', header = F)
 highlow <- read.csv(file = 'cNPV_output_Case2.csv', header = F)
 lowhigh <- read.csv(file = 'cNPV_output_Case3.csv', header = F)
